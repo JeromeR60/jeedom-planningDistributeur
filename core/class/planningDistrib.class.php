@@ -275,8 +275,20 @@ class planningDistrib extends eqLogic {
       'color' => ltrim(preg_match('/^#[0-9a-fA-F]{6}$/', $this->getConfiguration('color', '')) ? $this->getConfiguration('color') : '#EF9F27', '#'),
       'width' => (int)$this->getConfiguration('width', 360) ?: 360,
     );
+    // Nom de widget propre au plugin : Jeedom met les widgets en cache par nom de fichier,
+    // un nom partagé avec un autre plugin (ex. planningThermo) afficherait le mauvais widget.
+    $changed = false;
+    foreach (array('dashboard', 'mobile') as $version) {
+      if ($planning->getTemplate($version) == 'planningDistrib::planning') {
+        $planning->setTemplate($version, 'planningDistrib::planningDistrib');
+        $changed = true;
+      }
+    }
     if ($planning->getDisplay('parameters') != $params) {
       $planning->setDisplay('parameters', $params);
+      $changed = true;
+    }
+    if ($changed) {
       $planning->save();
     }
 
@@ -300,8 +312,8 @@ class planningDistrib extends eqLogic {
         $cmd->setIsHistorized(0);
       }
       if ($_logicalId == 'planning') {
-        $cmd->setTemplate('dashboard', 'planningDistrib::planning');
-        $cmd->setTemplate('mobile', 'planningDistrib::planning');
+        $cmd->setTemplate('dashboard', 'planningDistrib::planningDistrib');
+        $cmd->setTemplate('mobile', 'planningDistrib::planningDistrib');
         $cmd->setDisplay('showNameOndashboard', 0);
         $cmd->setDisplay('showNameOnmobile', 0);
       }
