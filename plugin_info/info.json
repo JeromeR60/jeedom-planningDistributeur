@@ -1,0 +1,20 @@
+{
+  "id": "planningDistrib",
+  "name": "Planning Distributeur",
+  "description": {
+    "fr_FR": "Planification hebdomadaire des doses d'un distributeur pour animaux (une case par heure) avec widget graphique éditable.",
+    "en_US": "Weekly scheduling of a pet feeder's doses (one slot per hour) with an editable graphical widget."
+  },
+  "licence": "AGPL",
+  "author": "Jérôme Raimbourg",
+  "require": "4.4",
+  "pluginVersion": "0.1.0",
+  "category": "programming",
+  "hasDependency": false,
+  "hasOwnDeamon": false,
+  "maxDependancyInstallTime": 0,
+  "changelog": "https://github.com/JeromeR60/jeedom-planningDistributeur/commits/main",
+  "documentation": "https://github.com/JeromeR60/jeedom-planningDistributeur/blob/main/docs/fr_FR/index.md",
+  "display": "",
+  "mobile": ""
+}
