@@ -5,6 +5,7 @@ Planification hebdomadaire des doses d'un distributeur pour animaux, avec un wid
 - Grille de 7 jours × 24 heures : chaque case contient une dose (0 = rien)
 - On choisit une dose puis on « peint » les cases au doigt ou à la souris
 - Copie d'un jour sur la semaine (lun→ven ou 7 jours), vidage d'un jour
+- Bouton « Distribuer maintenant » : envoie tout de suite la dose sélectionnée
 - Total du jour (distribué / prévu), prochaine et dernière distribution
 - Un équipement par distributeur
 
@@ -45,6 +46,7 @@ Si la dose min ou max change, le planning existant est ramené dans les nouvelle
 | Prochaine distribution | info | Heure et dose (`18:00 - 3`, `lun. 08:00 - 2`) |
 | Dernière dose | info numérique | |
 | Dernière distribution | info | Heure de la dernière distribution (`12:00`, `lun. 18:00`) |
+| Distribuer | action message | Distribue tout de suite la dose indiquée (ex. `2`), hors planning ; comptée dans le total du jour |
 
 ## Format de l'info Planning
 

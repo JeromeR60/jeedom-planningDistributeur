@@ -255,6 +255,7 @@ class planningDistrib extends eqLogic {
     $this->createCmd('next', __('Prochaine distribution', __FILE__), 'info', 'string', $order++, false);
     $lastDose = $this->createCmd('lastDose', __('Dernière dose', __FILE__), 'info', 'numeric', $order++, false);
     $lastTime = $this->createCmd('lastTime', __('Dernière distribution', __FILE__), 'info', 'string', $order++, false);
+    $distrib = $this->createCmd('distribute', __('Distribuer', __FILE__), 'action', 'message', $order++, false);
 
     // Le planning stocké est ramené dans les nouvelles bornes
     $current = (string)$this->getConfiguration('planning', '');
@@ -267,6 +268,7 @@ class planningDistrib extends eqLogic {
     // Paramètres du widget, recalculés à chaque sauvegarde
     $params = array(
       'set_id' => $setPlanning->getId(),
+      'distrib_id' => $distrib->getId(),
       'done_id' => $done->getId(),
       'last_dose_id' => $lastDose->getId(),
       'last_time_id' => $lastTime->getId(),
@@ -320,6 +322,10 @@ class planningDistrib extends eqLogic {
       if ($_logicalId == 'setPlanning') {
         $cmd->setDisplay('title_disable', 1);
       }
+      if ($_logicalId == 'distribute') {
+        $cmd->setDisplay('title_disable', 1);
+        $cmd->setDisplay('message_placeholder', __('Dose (ex. 2)', __FILE__));
+      }
       $cmd->save();
     }
     return $cmd;
@@ -340,6 +346,10 @@ class planningDistribCmd extends cmd {
     switch ($this->getLogicalId()) {
       case 'setPlanning':
         $eqLogic->setPlanningString($message);
+        break;
+      case 'distribute':
+        // Distribution immédiate de la dose indiquée (hors planning)
+        $eqLogic->distribute($message, 'manuel');
         break;
     }
   }
