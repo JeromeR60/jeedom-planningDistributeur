@@ -10,7 +10,7 @@ if (!isConnect()) {
   <fieldset>
     <div class="form-group">
       <div class="col-sm-12">
-        <span>{{Aucune configuration globale : tout se règle dans chaque équipement (Plugins → Programmation → Planning Distributeur).}}</span>
+        <span>{{Aucune configuration globale : tout se règle dans chaque équipement (Plugins → Organisation → Planning Distributeur).}}</span>
       </div>
     </div>
   </fieldset>

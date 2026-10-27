@@ -10,7 +10,7 @@ Planification hebdomadaire des doses d'un distributeur pour animaux, avec un wid
 
 ## Configuration
 
-1. **Plugins → Programmation → Planning Distributeur → Ajouter**.
+1. **Plugins → Organisation → Planning Distributeur → Ajouter**.
 2. Choisissez l'**objet parent** et la **commande de distribution** : la commande action du distributeur qui reçoit la dose (curseur, message ou liste).
 3. Renseignez la **dose min** et la **dose max** (par défaut 1 à 12, maximum 50).
 4. Sauvegardez. Le widget apparaît sur le Dashboard avec un planning vide, à remplir directement.
