@@ -11,6 +11,13 @@
     .planningDistrib .pd-day.on{background:rgba(128,128,128,.35);font-weight:600}
     .planningDistrib .pd-day.today{text-decoration:underline}
     .planningDistrib .pd-row{display:grid;grid-template-columns:28px repeat(6,minmax(30px,1fr));gap:2px;margin-bottom:2px;touch-action:none}
+    .planningDistrib.locked .pd-row{touch-action:pan-x pan-y}
+    .planningDistrib.locked .pd-cell{cursor:default}
+    .planningDistrib .pd-right{display:flex;align-items:flex-start;gap:6px}
+    .planningDistrib .pd-lock{display:none;align-items:center;justify-content:center;width:30px;height:30px;margin:-5px -5px 0 0;border-radius:5px;font-size:15px;cursor:pointer;opacity:.6}
+    .planningDistrib .pd-lock.touch{display:inline-flex}
+    .planningDistrib:not(.locked) .pd-lock{opacity:1;color:#e67e22;background:rgba(230,126,34,.18)}
+    .planningDistrib.locked [data-act=copyWeek],.planningDistrib.locked [data-act=copyAll],.planningDistrib.locked [data-act=clear]{opacity:.45}
     .planningDistrib .pd-lbl{font-size:10px;opacity:.6;align-self:center}
     .planningDistrib .pd-cell{height:28px;min-width:0;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;box-shadow:inset 0 0 0 1px rgba(128,128,128,.3)}
     .planningDistrib .pd-cell.now{outline:2px solid currentColor;outline-offset:-2px}
@@ -27,9 +34,12 @@
       <div class="pd-status pd-next"></div>
       <div class="pd-status pd-last"></div>
     </div>
-    <div class="pd-today">
-      <div class="pd-total"></div>
-      <div class="pd-total-lbl">aujourd'hui</div>
+    <div class="pd-right">
+      <div class="pd-today">
+        <div class="pd-total"></div>
+        <div class="pd-total-lbl">aujourd'hui</div>
+      </div>
+      <a class="pd-lock"></a>
     </div>
   </div>
   <div class="pd-days"></div>
@@ -210,6 +220,38 @@
       }
     }
 
+    // Verrou d'édition : sur écran tactile, la grille est verrouillée par défaut
+    // pour que le défilement de la page ne modifie pas le planning par accident.
+    var TOUCH = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    var LOCK_DELAY = 30000, locked = false, lockTimer = null;
+    var elLock = $('.pd-lock');
+    function setLocked(v) {
+      locked = v;
+      clearTimeout(lockTimer);
+      root.classList.toggle('locked', v);
+      elLock.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">' +
+        '<rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor"/>' +
+        (v ? '<path d="M8 11V7a4 4 0 0 1 8 0v4"/>' : '<path d="M8 11V7a4 4 0 0 1 7.8-1.2"/>') + '</svg>';
+      elLock.title = v ? 'Déverrouiller pour modifier le planning' : 'Verrouiller le planning';
+      if (!v) armLock();
+    }
+    function armLock() {
+      if (!TOUCH) return;
+      clearTimeout(lockTimer);
+      lockTimer = setTimeout(function () { if (painting) armLock(); else setLocked(true); }, LOCK_DELAY);
+    }
+    function lockedMsg() { msg('Planning verrouillé : touchez le cadenas pour le modifier'); }
+    if (TOUCH) {
+      elLock.classList.add('touch');
+      elLock.addEventListener('click', function (e) {
+        e.preventDefault();
+        setLocked(!locked);
+        msg(locked ? 'Planning verrouillé' : 'Planning déverrouillé (reverrouillage automatique après 30 s)');
+      });
+      setLocked(true);
+    }
+    function isEditAct(act) { return act === 'copyWeek' || act === 'copyAll' || act === 'clear'; }
+
     function paintAt(target) {
       if (!target || target.dataset.i === undefined || !root.contains(target)) return;
       var i = parseInt(target.dataset.i, 10);
@@ -219,13 +261,17 @@
       dirty = true;
     }
     elGrid.addEventListener('pointerdown', function (e) {
-      if (e.target.dataset.i === undefined) return;
+      if (e.target.dataset.i === undefined || locked) return;
       e.preventDefault();
       painting = true;
+      armLock();
       paintAt(e.target);
     });
     elGrid.addEventListener('pointermove', function (e) {
       if (painting) paintAt(document.elementFromPoint(e.clientX, e.clientY));
+    });
+    elGrid.addEventListener('click', function (e) {
+      if (locked && e.target.dataset.i !== undefined) lockedMsg();
     });
     window.addEventListener('pointerup', function () {
       if (!painting) return;
@@ -237,6 +283,10 @@
       var a = e.target.closest('[data-act]');
       if (!a) return;
       var act = a.dataset.act, src = plan.slice(day * SLOTS, (day + 1) * SLOTS), d, s;
+      if (isEditAct(act)) {
+        if (locked) { lockedMsg(); return; }
+        armLock();
+      }
       if (act === 'copyWeek' || act === 'copyAll') {
         var last = act === 'copyWeek' ? 5 : 7;
         for (d = 0; d < last; d++) for (s = 0; s < SLOTS; s++) plan[d * SLOTS + s] = src[s];
