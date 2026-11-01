@@ -47,7 +47,7 @@ Si la dose min ou max change, le planning existant est ramené dans les nouvelle
 | Prochaine distribution | info | Heure et dose (`18:00 - 3`, `lun. 08:00 - 2`) |
 | Dernière dose | info numérique | |
 | Dernière distribution | info | Heure de la dernière distribution (`12:00`, `lun. 18:00`) |
-| Distribuer | action message | Distribue tout de suite la dose indiquée (ex. `2`), hors planning ; comptée dans *Distribué aujourd'hui* et *Manuel aujourd'hui* |
+| Distribuer | action message | Distribue tout de suite la dose indiquée (ex. `2`), hors planning ; comptée dans *Distribué aujourd'hui* et *Manuel aujourd'hui*. Accepte aussi la valeur d'un curseur ou d'une liste : un virtuel (action curseur) peut la cibler directement |
 
 ## Format de l'info Planning
 

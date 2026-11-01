@@ -362,7 +362,11 @@ class planningDistribCmd extends cmd {
         $eqLogic->setPlanningString($message);
         break;
       case 'distribute':
-        // Distribution immédiate de la dose indiquée (hors planning)
+        // Distribution immédiate de la dose indiquée (hors planning).
+        // La dose est lue dans le message, ou dans la valeur d'un curseur / d'une liste
+        // quand la commande est appelée par un virtuel (action curseur qui la cible).
+        if ($message === '' && isset($_options['slider'])) $message = trim((string)$_options['slider']);
+        if ($message === '' && isset($_options['select'])) $message = trim((string)$_options['select']);
         $eqLogic->distribute($message, 'manuel');
         break;
     }
