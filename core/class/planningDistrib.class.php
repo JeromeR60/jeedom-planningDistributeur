@@ -117,6 +117,14 @@ class planningDistrib extends eqLogic {
     return (int)$this->getConfiguration('doneTotal', 0);
   }
 
+  /** Doses distribuées manuellement aujourd'hui (remis à zéro au changement de jour) */
+  public function getTodayManual() {
+    if ($this->getConfiguration('doneDate', '') != date('Y-m-d')) {
+      return 0;
+    }
+    return (int)$this->getConfiguration('manualTotal', 0);
+  }
+
   public function getTodayPlanned() {
     $plan = $this->getPlan();
     $day = (int)date('N') - 1;
@@ -127,6 +135,7 @@ class planningDistrib extends eqLogic {
     $this->checkAndUpdateCmd('planning', $this->serializePlanning());
     $this->checkAndUpdateCmd('todayPlanned', $this->getTodayPlanned());
     $this->checkAndUpdateCmd('todayDone', $this->getTodayDone());
+    $this->checkAndUpdateCmd('todayManual', $this->getTodayManual());
     $next = $this->nextDistribution();
     $this->checkAndUpdateCmd('next', $next !== null ? self::formatTime($next['ts']) . ' - ' . $next['dose'] : '');
     $lastTs = (int)$this->getConfiguration('lastTs', 0);
@@ -185,9 +194,13 @@ class planningDistrib extends eqLogic {
     }
 
     $today = date('Y-m-d');
-    $done = $this->getConfiguration('doneDate', '') == $today ? (int)$this->getConfiguration('doneTotal', 0) : 0;
+    $sameDay = $this->getConfiguration('doneDate', '') == $today;
+    $done = $sameDay ? (int)$this->getConfiguration('doneTotal', 0) : 0;
+    $manual = $sameDay ? (int)$this->getConfiguration('manualTotal', 0) : 0;
+    // manualTotal partage doneDate avec doneTotal : remis à zéro ensemble au changement de jour
     $this->setConfiguration('doneDate', $today);
     $this->setConfiguration('doneTotal', $done + $dose);
+    $this->setConfiguration('manualTotal', $manual + ($_source == 'manuel' ? $dose : 0));
     $this->setConfiguration('lastDose', $dose);
     $this->setConfiguration('lastTs', time());
     $this->save(true);
@@ -252,6 +265,7 @@ class planningDistrib extends eqLogic {
     $setPlanning = $this->createCmd('setPlanning', __('Set planning', __FILE__), 'action', 'message', $order++, false);
     $planned = $this->createCmd('todayPlanned', __('Prévu aujourd\'hui', __FILE__), 'info', 'numeric', $order++, false);
     $done = $this->createCmd('todayDone', __('Distribué aujourd\'hui', __FILE__), 'info', 'numeric', $order++, false);
+    $manual = $this->createCmd('todayManual', __('Manuel aujourd\'hui', __FILE__), 'info', 'numeric', $order++, false);
     $this->createCmd('next', __('Prochaine distribution', __FILE__), 'info', 'string', $order++, false);
     $lastDose = $this->createCmd('lastDose', __('Dernière dose', __FILE__), 'info', 'numeric', $order++, false);
     $lastTime = $this->createCmd('lastTime', __('Dernière distribution', __FILE__), 'info', 'string', $order++, false);
@@ -269,6 +283,7 @@ class planningDistrib extends eqLogic {
     $params = array(
       'set_id' => $setPlanning->getId(),
       'done_id' => $done->getId(),
+      'manual_id' => $manual->getId(),
       'last_dose_id' => $lastDose->getId(),
       'last_time_id' => $lastTime->getId(),
       'min' => $this->getDoseMin(),

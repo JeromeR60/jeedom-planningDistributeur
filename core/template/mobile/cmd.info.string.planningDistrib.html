@@ -63,6 +63,7 @@
     function param(v, def) { return (!v || v.charAt(0) === '#') ? def : v; }
     var setId = param('#set_id#', '');
     var doneId = param('#done_id#', '');
+    var manualId = param('#manual_id#', '');
     var lastDoseId = param('#last_dose_id#', '');
     var lastTimeId = param('#last_time_id#', '');
     var MIN = Math.max(1, parseInt(param('#min#', '1'), 10) || 1);
@@ -72,12 +73,12 @@
     root.style.width = width + 'px';
 
     var plan = [], day = todayIdx(), dose = MIN;
-    var done = 0, lastDose = '', lastTime = '';
+    var done = 0, manual = 0, lastDose = '', lastTime = '';
     var painting = false, dirty = false, saveTimer = null;
 
     var $ = function (s) { return root.querySelector(s); };
     var elDays = $('.pd-days'), elGrid = $('.pd-grid'), elDoses = $('.pd-doses');
-    var elNext = $('.pd-next'), elLast = $('.pd-last'), elTotal = $('.pd-total'), elMsg = $('.pd-msg');
+    var elNext = $('.pd-next'), elLast = $('.pd-last'), elTotal = $('.pd-total'), elTotalLbl = $('.pd-total-lbl'), elMsg = $('.pd-msg');
 
     function todayIdx() { return (new Date().getDay() + 6) % 7; }
     function nowIdx() { return todayIdx() * SLOTS + new Date().getHours(); }
@@ -194,7 +195,9 @@
     function renderStatus() {
       var t = todayIdx(), planned = 0;
       for (var s = 0; s < SLOTS; s++) planned += plan[t * SLOTS + s];
-      elTotal.textContent = done + ' / ' + planned;
+      // Doses du planning seulement ; les doses manuelles sont indiquées à part
+      elTotal.textContent = Math.max(0, done - manual) + ' / ' + planned;
+      elTotalLbl.textContent = 'aujourd\'hui' + (manual > 0 ? ' (+' + manual + ' manuelle' + (manual > 1 ? 's' : '') + ')' : '');
       var nx = nextDistrib();
       if (nx < 0) {
         elNext.textContent = 'Aucune distribution prévue';
@@ -211,6 +214,7 @@
     }
     function refreshInfos() {
       readInfo(doneId, function (v) { done = parseInt(v, 10) || 0; renderStatus(); });
+      readInfo(manualId, function (v) { manual = parseInt(v, 10) || 0; renderStatus(); });
       readInfo(lastDoseId, function (v) { lastDose = v; renderStatus(); });
       readInfo(lastTimeId, function (v) { lastTime = v; renderStatus(); });
     }
@@ -311,6 +315,7 @@
       jeedom.cmd.update['#id#'] = onUpdate;
     }
     watch(doneId, function (v) { done = parseInt(v, 10) || 0; });
+    watch(manualId, function (v) { manual = parseInt(v, 10) || 0; });
     watch(lastDoseId, function (v) { lastDose = v; });
     watch(lastTimeId, function (v) { lastTime = v; });
 

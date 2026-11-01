@@ -6,7 +6,7 @@ Planification hebdomadaire des doses d'un distributeur pour animaux, avec un wid
 - On choisit une dose puis on « peint » les cases au doigt ou à la souris
 - Sur écran tactile (mobile, Jeedom Connect), la grille est verrouillée par défaut pour pouvoir faire défiler la page sans la modifier : touchez le cadenas pour la déverrouiller (reverrouillage automatique après 30 s)
 - Copie d'un jour sur la semaine (lun→ven ou 7 jours), vidage d'un jour
-- Total du jour (distribué / prévu), prochaine et dernière distribution
+- Total du jour (distribué par le planning / prévu, doses manuelles indiquées à part), prochaine et dernière distribution
 - Un équipement par distributeur
 
 ## Configuration
@@ -42,11 +42,12 @@ Si la dose min ou max change, le planning existant est ramené dans les nouvelle
 | Planning | info | Planning (porte le widget) |
 | Set planning | action message | Remplace le planning (format ci-dessous) |
 | Prévu aujourd'hui | info numérique | Somme des doses prévues aujourd'hui |
-| Distribué aujourd'hui | info numérique | Somme des doses distribuées aujourd'hui (remise à zéro à minuit) |
+| Distribué aujourd'hui | info numérique | Somme des doses distribuées aujourd'hui, planning + manuel (remise à zéro à minuit) |
+| Manuel aujourd'hui | info numérique | Somme des doses distribuées manuellement aujourd'hui avec *Distribuer* (remise à zéro à minuit). Doses du planning = Distribué − Manuel |
 | Prochaine distribution | info | Heure et dose (`18:00 - 3`, `lun. 08:00 - 2`) |
 | Dernière dose | info numérique | |
 | Dernière distribution | info | Heure de la dernière distribution (`12:00`, `lun. 18:00`) |
-| Distribuer | action message | Distribue tout de suite la dose indiquée (ex. `2`), hors planning ; comptée dans le total du jour |
+| Distribuer | action message | Distribue tout de suite la dose indiquée (ex. `2`), hors planning ; comptée dans *Distribué aujourd'hui* et *Manuel aujourd'hui* |
 
 ## Format de l'info Planning
 
