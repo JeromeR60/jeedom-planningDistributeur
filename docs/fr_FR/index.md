@@ -48,6 +48,7 @@ Si la dose min ou max change, le planning existant est ramené dans les nouvelle
 | Dernière dose | info numérique | |
 | Dernière distribution | info | Heure de la dernière distribution (`12:00`, `lun. 18:00`) |
 | Distribuer | action message | Distribue tout de suite la dose indiquée (ex. `2`), hors planning ; comptée dans *Distribué aujourd'hui* et *Manuel aujourd'hui*. Accepte aussi la valeur d'un curseur ou d'une liste : un virtuel (action curseur) peut la cibler directement |
+| Distribuer (curseur) | action curseur | Identique à *Distribuer*, la dose étant la valeur du curseur (bornes = dose min / max). À utiliser pour une action curseur de virtuel : `#[Objet][Équipement][Distribuer (curseur)]#` |
 
 ## Format de l'info Planning
 

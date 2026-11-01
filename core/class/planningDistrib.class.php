@@ -270,6 +270,14 @@ class planningDistrib extends eqLogic {
     $lastDose = $this->createCmd('lastDose', __('Dernière dose', __FILE__), 'info', 'numeric', $order++, false);
     $lastTime = $this->createCmd('lastTime', __('Dernière distribution', __FILE__), 'info', 'string', $order++, false);
     $this->createCmd('distribute', __('Distribuer', __FILE__), 'action', 'message', $order++, false);
+    // Même action en curseur : peut être ciblée par une action curseur d'un virtuel
+    $distributeSlider = $this->createCmd('distributeSlider', __('Distribuer (curseur)', __FILE__), 'action', 'slider', $order++, false);
+    if ($distributeSlider->getConfiguration('minValue') != $this->getDoseMin()
+      || $distributeSlider->getConfiguration('maxValue') != $this->getDoseMax()) {
+      $distributeSlider->setConfiguration('minValue', $this->getDoseMin());
+      $distributeSlider->setConfiguration('maxValue', $this->getDoseMax());
+      $distributeSlider->save();
+    }
 
     // Le planning stocké est ramené dans les nouvelles bornes
     $current = (string)$this->getConfiguration('planning', '');
@@ -360,6 +368,9 @@ class planningDistribCmd extends cmd {
     switch ($this->getLogicalId()) {
       case 'setPlanning':
         $eqLogic->setPlanningString($message);
+        break;
+      case 'distributeSlider':
+        $eqLogic->distribute(isset($_options['slider']) ? $_options['slider'] : '', 'manuel');
         break;
       case 'distribute':
         // Distribution immédiate de la dose indiquée (hors planning).
