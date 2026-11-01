@@ -9,12 +9,20 @@ Planification hebdomadaire des doses d'un distributeur pour animaux, avec un wid
 - Total du jour (distribué par le planning / prévu, doses manuelles indiquées à part), prochaine et dernière distribution
 - Un équipement par distributeur
 
+![Widget Planning Distributeur sur le Dashboard](../images/widget.png)
+
+*Le widget sur le Dashboard : prochaine et dernière distribution, total du jour (doses du planning distribuées / prévues), choix du jour, grille du jour avec la dose de chaque heure (l'heure courante est encadrée), palette des doses et boutons de copie.*
+
 ## Configuration
 
 1. **Plugins → Organisation → Planning Distributeur → Ajouter**.
 2. Choisissez l'**objet parent** et la **commande de distribution** : la commande action du distributeur qui reçoit la dose (curseur, message ou liste).
 3. Renseignez la **dose min** et la **dose max** (par défaut 1 à 12, maximum 50).
 4. Sauvegardez. Le widget apparaît sur le Dashboard avec un planning vide, à remplir directement.
+
+![Configuration d'un équipement Planning Distributeur](../images/configuration.png)
+
+*Exemple de configuration : commande de distribution du distributeur physique, doses de 1 à 12, couleur et largeur du widget.*
 
 ### Champs
 

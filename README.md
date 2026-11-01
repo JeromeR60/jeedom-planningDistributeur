@@ -2,6 +2,8 @@
 
 Planification hebdomadaire des doses d'un distributeur pour animaux (une case par heure) avec un widget graphique éditable.
 
+![Widget Planning Distributeur](docs/images/widget.png)
+
 Documentation : [docs/fr_FR/index.md](docs/fr_FR/index.md)
 
 ## Installation depuis GitHub
