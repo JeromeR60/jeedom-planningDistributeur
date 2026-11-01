@@ -13,7 +13,7 @@
   "hasDependency": false,
   "hasOwnDeamon": false,
   "maxDependancyInstallTime": 0,
-  "changelog": "https://github.com/JeromeR60/jeedom-planningDistributeur/commits/main",
+  "changelog": "https://github.com/JeromeR60/jeedom-planningDistributeur/blob/main/docs/fr_FR/index.md#historique-des-versions",
   "documentation": "https://github.com/JeromeR60/jeedom-planningDistributeur/blob/main/docs/fr_FR/index.md",
   "display": "",
   "mobile": ""
